@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KesselRun.Extensions", "KesselRun.Extensions\KesselRun.Extensions.csproj", "{34C0DDA1-DCA7-4FC0-83D5-B8AC23C4FF1A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestHarness", "TestHarness\TestHarness.csproj", "{1D7BDBD3-D8F3-47C7-8959-2183A80722E2}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KesselRun.Extensions.Tests", "KesselRun.Extensions.Tests\KesselRun.Extensions.Tests.csproj", "{47F02BDB-78CC-4F78-BBDC-B71A864E6DBA}"
 EndProject
 Global
