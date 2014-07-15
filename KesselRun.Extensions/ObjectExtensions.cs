@@ -1,5 +1,6 @@
 ﻿
 using System;
+using Newtonsoft.Json;
 
 namespace KesselRun.Extensions
 {
@@ -20,6 +21,18 @@ namespace KesselRun.Extensions
                 throw new NotSupportedException("The object cannot be a value type.");
 
             return ReferenceEquals(null, source);
+        }
+
+        public static string ToJsonString(this object obj)
+        {
+            return JsonConvert.SerializeObject(obj);
+        }
+
+        public static string GetJsonTypeDescription(this object obj)
+        {
+            if (obj == null) throw new ArgumentNullException("obj");
+            var description = obj.GetType().GetDescription();
+            return description.ToJsonString();
         }
     }
 }

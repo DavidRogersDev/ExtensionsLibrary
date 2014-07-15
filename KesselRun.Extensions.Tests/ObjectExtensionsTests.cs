@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using Newtonsoft.Json.Linq;
 
 namespace KesselRun.Extensions.Tests
 {
@@ -32,12 +33,12 @@ namespace KesselRun.Extensions.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NotSupportedException), "The object cannot be a value type.")]
+        [ExpectedException(typeof (NotSupportedException), "The object cannot be a value type.")]
         public void VariableWhichIsValueTypeCallsIsNullThrowsException()
         {
             //  Arrange
             var number = 5;
-            
+
             //  Act
             var result = number.IsNull();
 
@@ -46,12 +47,12 @@ namespace KesselRun.Extensions.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NotSupportedException), "The object cannot be a value type.")]
+        [ExpectedException(typeof (NotSupportedException), "The object cannot be a value type.")]
         public void VariableWhichIsGuidCallsIsNullThrowsExceptiosn()
         {
             //  Arrange
             var guid = Guid.NewGuid();
-            
+
             //  Act
             var result = guid.IsNull();
 
@@ -60,12 +61,12 @@ namespace KesselRun.Extensions.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NotSupportedException), "The object cannot be a value type.")]
+        [ExpectedException(typeof (NotSupportedException), "The object cannot be a value type.")]
         public void VariableWhichIsNullableTypeCallsIsNullThrowsException()
         {
             //  Arrange
             Nullable<int> number = 5;
-            
+
             //  Act
             var result = number.IsNull();
 
@@ -73,6 +74,66 @@ namespace KesselRun.Extensions.Tests
             Assert.Fail();
         }
 
+        [TestMethod]
+        public void ToJsonStringSerializesObjectToJson()
+        {
+            //  Arrange
+            var nowDescription = typeof (Array).GetDescription();
 
+            //  Act
+            var result = nowDescription.ToJsonString();
+
+            //  Assert                        
+            Assert.IsTrue(true);
+        }
+
+        [TestMethod]
+        public void ToJsonStringSerializesNullToString()
+        {
+            //  Arrange
+            Array nullValue = null;
+
+            //  Act
+            // ReSharper disable once ExpressionIsAlwaysNull
+            var result = nullValue.ToJsonString();
+
+            //  Assert                        
+            Assert.AreEqual("null", result);
+        }
+
+        [TestMethod]
+        public void GetJsonTypeDescriptionReturnsJsonObjectForTypeDescription()
+        {
+            //  Arrange
+            var stringArray = new string[] {"hello", "all"};
+
+            //  Act
+            var jsonTypeDescription = stringArray.GetJsonTypeDescription();
+            var jObject = JObject.Parse(jsonTypeDescription);
+
+
+
+            //  Assert                        
+            Assert.AreEqual("System.String[]", jObject["FullName"]);
+            Assert.AreEqual(
+                "System.String[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+                jObject["AssemblyQualifiedName"]);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof (ArgumentNullException))]
+        public void GetJsonTypeDescriptionThrowsExceptionWhereArgumentIsNull()
+        {
+            //  Arrange
+            Array stringArray = null;
+
+            //  Act
+            // ReSharper disable once ExpressionIsAlwaysNull
+            var jsonTypeDescription = stringArray.GetJsonTypeDescription();
+
+            //  Assert                        
+            Assert.Fail();
+        }
     }
 }
+

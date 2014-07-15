@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using KesselRun.Extensions.Tests.Infrastructure;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -897,7 +898,6 @@ namespace KesselRun.Extensions.Tests
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof (FormatException), "String was not recognized as a valid DateTime.")]
 		public void ToDateTimeFailsParseDateInWrongFormat()
 		{
 			var dateTarget = GetDate();
@@ -907,10 +907,12 @@ namespace KesselRun.Extensions.Tests
 			const string dateString = "14-11-22";
 
 			//  Act
-			var result = dateString.ToDateTime(format);
+            //  Assert                        
+            ExceptionAssert.Throws<FormatException>(
+                () => { var result = dateString.ToDateTime(format); }, 
+                "String was not recognized as a valid DateTime."
+                );
 
-			//  Assert                        
-			Assert.Fail(ExpectedExceptionFail);
 		}
 
 		[TestMethod]
