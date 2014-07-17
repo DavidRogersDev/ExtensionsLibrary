@@ -1,4 +1,5 @@
-﻿using KesselRun.Extensions.Tests.Infrastructure;
+﻿using System.Reflection;
+using KesselRun.Extensions.Tests.Infrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
@@ -960,6 +961,20 @@ namespace KesselRun.Extensions.Tests
 			//  Assert                        
 			Assert.AreEqual(indexes.Count, 0);
 		}
+
+	    [TestMethod]
+	    public void GetIndexOfNthCharHelperDoes()
+	    {
+            //  Arrange
+	        var type = typeof (StringExtensions);
+            var getIndexOfNthCharHelperMethod = type.GetMethod("GetIndexOfNthCharHelper", BindingFlags.NonPublic | BindingFlags.Static);
+
+            //  Act
+            int index = (int)getIndexOfNthCharHelperMethod.Invoke(null, new object[] { path, 2, 0, Path.DirectorySeparatorChar });
+
+            //  Assert                        
+            Assert.AreEqual(15, index);
+	    }
 
 		private static DateTime GetDate()
 		{
