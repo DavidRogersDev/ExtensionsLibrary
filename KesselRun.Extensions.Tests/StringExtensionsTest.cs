@@ -965,6 +965,8 @@ namespace KesselRun.Extensions.Tests
 	    [TestMethod]
 	    public void GetIndexOfNthCharHelperDoes()
 	    {
+            //  This test tests a private static method. I just wanted to see if it could be done.
+
             //  Arrange
 	        var type = typeof (StringExtensions);
             var getIndexOfNthCharHelperMethod = type.GetMethod("GetIndexOfNthCharHelper", BindingFlags.NonPublic | BindingFlags.Static);
@@ -974,6 +976,18 @@ namespace KesselRun.Extensions.Tests
 
             //  Assert                        
             Assert.AreEqual(15, index);
+	    }
+
+	    [TestMethod]
+	    public void RemoveIllegalCharactersStripsStringOfIllegalCharacters()
+	    {
+            //  Arrange
+	        var stringToClean = @"FirstBit ?Thennext*|Then\done/";
+	        //  Act
+	        var cleanString = stringToClean.RemoveIllegalCharacters();
+	        //  Assert                        
+            Assert.AreEqual("FirstBit ThennextThendone", cleanString);
+
 	    }
 
 		private static DateTime GetDate()

@@ -252,6 +252,30 @@ namespace KesselRun.Extensions
             return source.GetPatternMatches(pattern).Count;
         }
 
+        /// <summary>
+        /// Replace invalid characters in a string with empty strings. 
+        /// </summary>
+        /// <param name="stringToClean">Type: System.String. The string to parse for illegal characters.</param>
+        /// <returns>Type: System.String. A string stripped of the illegal characters.</returns>
+        public static string RemoveIllegalCharacters(this string stringToClean)
+        {
+            try
+            {
+                return Regex.Replace(
+                    stringToClean, @"[<>:\""/\\|?*]", // These are illegal for file/directory naming purposes in Windows.
+                    string.Empty,
+                    RegexOptions.None,
+                    TimeSpan.FromSeconds(1.5))
+                    .Trim();
+            }
+            catch (RegexMatchTimeoutException)
+            {
+                // If we timeout when replacing invalid characters,  
+                // we should return Empty. 
+                return string.Empty;
+            }
+        }
+
         public static bool? TryParseAsBool(this string source)
         {
             bool boolean;
