@@ -259,14 +259,16 @@ namespace KesselRun.Extensions
         /// <returns>Type: System.String. A string stripped of the illegal characters.</returns>
         public static string RemoveIllegalCharacters(this string stringToClean)
         {
+            if (stringToClean == null) throw new ArgumentNullException("stringToClean");
             try
             {
                 return Regex.Replace(
-                    stringToClean, @"[<>:\""/\\|?*]", // These are illegal for file/directory naming purposes in Windows.
+                    stringToClean, 
+                    @"[<>:\""/\\|?*]", // These are illegal for file/directory naming purposes in Windows.
                     string.Empty,
                     RegexOptions.None,
-                    TimeSpan.FromSeconds(1.5))
-                    .Trim();
+                    TimeSpan.FromSeconds(1.5)
+                    );
             }
             catch (RegexMatchTimeoutException)
             {

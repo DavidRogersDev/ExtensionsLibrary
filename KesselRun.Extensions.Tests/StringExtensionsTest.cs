@@ -982,12 +982,32 @@ namespace KesselRun.Extensions.Tests
 	    public void RemoveIllegalCharactersStripsStringOfIllegalCharacters()
 	    {
             //  Arrange
-	        var stringToClean = @"FirstBit ?Thennext*|Then\done/";
+	        var stringToClean = @"\FirstBit ?Thennext*|Then\done/";
 	        //  Act
 	        var cleanString = stringToClean.RemoveIllegalCharacters();
 	        //  Assert                        
-            Assert.AreEqual("FirstBit ThennextThendone", cleanString);
-
+            Assert.AreEqual(@"FirstBit ThennextThendone", cleanString);
+	    }
+        
+        [TestMethod]
+	    public void RemoveIllegalCharactersEdgeCaseAllSpacesString()
+	    {
+            //  Arrange
+	        var stringToClean = "    ";
+	        //  Act
+	        var cleanString = stringToClean.RemoveIllegalCharacters();
+	        //  Assert                        
+            Assert.AreEqual("    ", cleanString);
+	    }
+        
+        [TestMethod]
+	    public void RemoveIllegalCharactersEdgeCaseNullPassIn()
+	    {
+            //  Arrange
+	        string stringToClean = null;
+	        //  Act
+	        //  Assert                        
+            ExceptionAssert.Throws<ArgumentNullException>(() => stringToClean.RemoveIllegalCharacters());
 	    }
 
 		private static DateTime GetDate()
