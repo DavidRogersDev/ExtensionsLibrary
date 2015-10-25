@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Globalization;
+using System.Reflection;
 using KesselRun.Extensions.Tests.Infrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -397,6 +398,18 @@ namespace KesselRun.Extensions.Tests
 		}
 
 		[TestMethod]
+		public void GetPartPathReturnsPathSegment()
+		{
+			//  Arrange
+
+			//  Act
+			var partPath = path.GetPartPath(2, 5);
+
+			//  Assert            
+			Assert.AreEqual(@"MiscDisk2\Books I\Beginning CSS3", partPath);
+		}
+
+		[TestMethod]
 		public void GetPartPathPassedSameIntForBothSlashes()
 		{
 			//  Arrange
@@ -760,6 +773,59 @@ namespace KesselRun.Extensions.Tests
 			Assert.IsNull(result);
 		}
 
+
+        [TestMethod]
+        public void TryParseAsIntWithStylesPermitsLeadingWhiteSpace()
+        {
+            //  Arrange
+            var intToParse = "       5";
+
+            //  Act
+            var result = intToParse.TryParseAsInt(NumberStyles.AllowLeadingWhite, CultureInfo.CurrentCulture);
+
+            //  Assert                        
+            Assert.AreEqual(result, 5);
+        }
+
+        [TestMethod]
+        public void TryParseAsIntWithStylesPermitsThousandsComma()
+        {
+            //  Arrange
+            var intToParse = "5,000";
+
+            //  Act
+            var result = intToParse.TryParseAsInt(NumberStyles.AllowThousands, CultureInfo.CurrentCulture);
+
+            //  Assert                        
+            Assert.AreEqual(result, 5000);
+        }
+
+        [TestMethod]
+        public void TryParseAsIntWithStylesReturnsNullWhereInavlidString()
+        {
+            //  Arrange
+            var intToParse = "5,000.00";
+
+            //  Act
+            var result = intToParse.TryParseAsInt(NumberStyles.AllowThousands, CultureInfo.CurrentCulture);
+
+            //  Assert                        
+            Assert.AreEqual(result, null);
+        }
+
+        [TestMethod]
+        public void TryParseAsIntWithStylesReturnsIntWhereMoreOneFlagUsed()
+        {
+            //  Arrange
+            var intToParse = "5,000.00";
+
+            //  Act
+            var result = intToParse.TryParseAsInt(NumberStyles.AllowThousands | NumberStyles.AllowDecimalPoint, CultureInfo.CurrentCulture);
+
+            //  Assert                        
+            Assert.AreEqual(result, 5000);
+        }
+
 		[TestMethod]
 		public void TrimSuffixFromEndTrimsSuffix()
 		{
@@ -1008,6 +1074,36 @@ namespace KesselRun.Extensions.Tests
 	        //  Act
 	        //  Assert                        
             ExceptionAssert.Throws<ArgumentNullException>(() => stringToClean.RemoveIllegalCharacters());
+	    }
+
+	    [TestMethod]
+	    public void UtcToUtcDateTimeCreatesUtcDateTime()
+	    {
+            //  Arrange
+	        DateTime nowUtc = DateTime.UtcNow;
+            string nowUtcAsString = nowUtc.ToString("o");
+            
+	        //  Act
+	        var parsed = nowUtcAsString.ToUtcDateTime();
+
+	        //  Assert                        
+            Assert.AreEqual(parsed, nowUtc);
+	    }
+        
+        [TestMethod]
+	    public void UtcToUtcDateTimeCreatesUtcDateTimeFromNonUtcString()
+	    {
+            //  Arrange
+	        DateTime nowUtc = DateTime.UtcNow;
+	        DateTime now = DateTime.Now;
+
+            string nowUtcAsString = now.ToString("o");
+            
+	        //  Act
+	        var parsed = nowUtcAsString.ToUtcDateTime();
+
+	        //  Assert                        
+            Assert.AreEqual(parsed.ToLongDateString(), nowUtc.ToLongDateString());
 	    }
 
 		private static DateTime GetDate()

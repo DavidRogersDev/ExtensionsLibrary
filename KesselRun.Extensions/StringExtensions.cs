@@ -7,10 +7,27 @@ using System.Text.RegularExpressions;
 
 namespace KesselRun.Extensions
 {
+    /// <summary>
+    /// Note: all indexes in this class are 0-based.
+    /// </summary>
     public static class StringExtensions
     {
         public const string NotFound = "__NOT_FOUND__";
         public const string PathParameter = "path";
+        public const string SourceParameter = "source";
+
+        /// <summary>
+        /// Returns the string, but shorter by 1 character (being that the last character was removed from the end).
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static string CutOffLastCharacter(this string source)
+        {
+            if (string.IsNullOrWhiteSpace(source))
+                return source;
+
+            return source.Substring(0, source.Length - 1);
+        }
 
         /// <summary>
         /// Find the index of the nth char in a string. For example, an UNC may have a long path with 7 slashes. You may want to find the 3rd slash (from the left).
@@ -90,7 +107,10 @@ namespace KesselRun.Extensions
 
 
         /// <summary>
-        /// Specifically meant for use with Windows UNCs. Gets path BETWEEN 2 slashes in an UNC.
+        /// Specifically meant for use with Windows UNCs. Gets path BETWEEN 2 slashes in an UNC. 0-based, so zero can be the firstSlash. TODO e.g.
+        /// Includes an edge case where the path starts with \\. In that case, it is not BETWEEN 2 slashes in so far as the 2 slashes at the beginning 
+        /// of the path are included in th returned string.
+        /// e.g. TODO
         /// </summary>
         /// <param name="path"></param>
         /// <param name="firstSlash"></param>
@@ -100,6 +120,12 @@ namespace KesselRun.Extensions
         {
             if (firstSlash == secondSlash)
                 return string.Empty;
+
+            if (path.StartsWith("\\") && firstSlash == 0) // edge case.
+                return path.SubstringFromNthToMth(
+                    path.GetIndexOfNthChar(firstSlash, Path.DirectorySeparatorChar),
+                    path.GetIndexOfNthChar(secondSlash, Path.DirectorySeparatorChar)
+                    ).CutOffLastCharacter();
 
             return path.SubstringBetweenNthAndMth(
                 path.GetIndexOfNthChar(firstSlash, Path.DirectorySeparatorChar),
@@ -221,7 +247,32 @@ namespace KesselRun.Extensions
 
         public static DateTime ToDateTime(this string source, string format)
         {
+            if (source == null) throw new ArgumentNullException(string.Format("The \"{0}\" parameter cannot be null.", SourceParameter), SourceParameter);
             return DateTime.ParseExact(source, format, DateTimeFormatInfo.CurrentInfo);
+        }
+
+        /// <summary>
+        /// Roundtrip a DateTime from a string which was previously converted from DateTime to string.
+        /// </summary>
+        /// <param name="source">Type: string: The string representation of a UTC date and time.</param>
+        /// <returns></returns>
+        public static DateTime ToDateTimeRoundTrip(this string source)
+        {
+            if (source == null) throw new ArgumentNullException(string.Format("The \"{0}\" parameter cannot be null.", SourceParameter), SourceParameter);
+            return DateTime.Parse(source, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+        }
+
+        /// <summary>
+        /// Strictly to be used for strings which are UTC DateTimes i.e. they end in Z e.g. "2013-12-31T01:23:45Z"
+        /// This method ensures that the formatted output is in UTC. DateTimeStyles.AssumeUniversal assumes the
+        /// string to format is in universal and DateTimeStyles.AdjustToUniversal means the parsed date will be UTC.
+        /// </summary>
+        /// <param name="source">Type: string: The string representation of a UTC date and time.</param>
+        /// <returns>Type: DateTime. The UTC DateTime struct as parsed.</returns>
+        public static DateTime ToUtcDateTime(this string source)
+        {
+            if (source == null) throw new ArgumentNullException(string.Format("The \"{0}\" parameter cannot be null.", SourceParameter), SourceParameter);
+            return DateTime.Parse(source, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
         }
 
         public static string TrimSuffixFromEnd(this string source, string suffix)
@@ -323,6 +374,19 @@ namespace KesselRun.Extensions
         {
             if (source.IsNull()) throw new ArgumentNullException("source");
             return source.Equals(string.Empty);
+        }
+
+        public static Stream ToStream(this string source)
+        {
+            if (source.IsNull()) throw new ArgumentNullException("source");
+
+            var stream = new MemoryStream();
+            var writer = new StreamWriter(stream);
+            writer.Write(source);
+            writer.Flush();
+            stream.Position = 0;
+
+            return stream;
         }
     }
 }
