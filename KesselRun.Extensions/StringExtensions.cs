@@ -388,5 +388,12 @@ namespace KesselRun.Extensions
 
             return stream;
         }
+
+        public static string RemoveSpaces(this string source)
+        {
+            if(source.IsNull()) throw new ArgumentNullException("source");
+
+            return source.Replace(" ", string.Empty);
+        }
     }
 }
