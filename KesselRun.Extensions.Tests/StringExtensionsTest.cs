@@ -24,6 +24,117 @@ namespace KesselRun.Extensions.Tests
 				   //01234567890123456789012345678901234567890123456789012345678901234567
 		}
 
+        [TestMethod]
+        public void CutOffLastCharacterReturnsStringWithoutLastCharacter()
+        {
+            // Arrange
+            const string wined = "wined";
+
+            // Act
+            var wine = wined.CutOffLastCharacter();
+
+            // Assert
+            Assert.AreEqual("wine", wine);
+        }
+
+
+        [TestMethod]
+        public void CutOffLastCharacterReturnsSameStringWhereOriginalIsWhitespace()
+        {
+            // Arrange
+            const string wined = "  ";
+
+            // Act
+            var wine = wined.CutOffLastCharacter();
+
+            // Assert
+            Assert.AreEqual(wined, wine);
+        }
+
+
+        [TestMethod]
+        public void CutOffLastCharacterReturnsSameStringWhereOriginalIsEmpty()
+        {
+            // Arrange
+            const string wined = "";
+
+            // Act
+            var wine = wined.CutOffLastCharacter();
+
+            // Assert
+            Assert.AreEqual(wined, wine);
+        }
+
+
+        [TestMethod]
+        public void CutOffLastCharacterReturnsSameStringWhereOriginalIsNull()
+        {
+            // Arrange
+            string wined = null;
+
+            // Act
+            var wine = wined.CutOffLastCharacter();
+
+            // Assert
+            Assert.IsNull(wined);
+        }
+
+
+        [TestMethod]
+        public void CutOffFirstCharacterReturnsStringWithoutFirstCharacter()
+        {
+            // Arrange
+            const string tripe = "tripe";
+
+            // Act
+            var ripe = tripe.CutOffFirstCharacter();
+
+            // Assert
+            Assert.AreEqual("ripe", ripe);
+        }
+
+
+        [TestMethod]
+        public void CutOffFirstCharacterReturnsSameStringWhereOriginalIsWhitespace()
+        {
+            // Arrange
+            const string tripe = "  ";
+
+            // Act
+            var ripe = tripe.CutOffFirstCharacter();
+
+            // Assert
+            Assert.AreEqual(tripe, ripe);
+        }
+
+
+        [TestMethod]
+        public void CutOffFirstCharacterReturnsSameStringWhereOriginalIsEmpty()
+        {
+            // Arrange
+            const string tripe = "";
+
+            // Act
+            var ripe = tripe.CutOffFirstCharacter();
+
+            // Assert
+            Assert.AreEqual(tripe, string.Empty);
+        }
+
+        [TestMethod]
+        public void CutOffFirstCharacterReturnsSameStringWhereOriginalIsNull()
+        {
+            // Arrange
+            string tripe = null;
+
+            // Act
+            var ripe = tripe.CutOffFirstCharacter();
+
+            // Assert
+            Assert.IsNull(ripe);
+        }
+
+
 		[TestMethod]
 		public void GetPartPathFromRightReturnsPartPath()
 		{
@@ -1105,6 +1216,25 @@ namespace KesselRun.Extensions.Tests
 	        //  Assert                        
             Assert.AreEqual(parsed.ToLongDateString(), nowUtc.ToLongDateString());
 	    }
+
+        [TestMethod]
+        public void ToStreamWritesToAStream()
+        {
+            string targetString = string.Empty;
+            string originString = "This string is to be copied to a stream.";
+
+            Stream stream;
+
+            using (stream = originString.ToStream()) 
+            {
+                using (StreamReader sr = new StreamReader(stream))
+                {
+                    targetString = sr.ReadToEnd();
+                }
+            }
+
+            Assert.AreEqual(targetString, originString);
+        }
 
 		private static DateTime GetDate()
 		{

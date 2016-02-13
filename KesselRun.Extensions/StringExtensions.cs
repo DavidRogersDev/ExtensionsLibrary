@@ -30,6 +30,19 @@ namespace KesselRun.Extensions
         }
 
         /// <summary>
+        /// Returns the string, but shorter by 1 character (being that the first character was removed from the start).
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static string CutOffFirstCharacter(this string source)
+        {
+            if (string.IsNullOrWhiteSpace(source))
+                return source;
+
+            return source.Substring(1);
+        }
+            
+        /// <summary>
         /// Find the index of the nth char in a string. For example, an UNC may have a long path with 7 slashes. You may want to find the 3rd slash (from the left).
         /// </summary>
         /// <param name="path"></param>
@@ -291,7 +304,7 @@ namespace KesselRun.Extensions
             return regex.Matches(source);
         }
 
-        public static List<int> GetIndexesOfPatternMatches(this string source, string pattern)
+        public static IList<int> GetIndexesOfPatternMatches(this string source, string pattern)
         {
             var matches = source.GetPatternMatches(pattern);
 
@@ -380,10 +393,17 @@ namespace KesselRun.Extensions
         {
             if (source.IsNull()) throw new ArgumentNullException("source");
 
+            byte[] byteArray = System.Text.Encoding.UTF8.GetBytes(source);
+
             var stream = new MemoryStream();
-            var writer = new StreamWriter(stream);
+            var writer = new StreamWriter(stream, System.Text.UTF8Encoding.UTF8, byteArray.Length, true);
+            
             writer.Write(source);
             writer.Flush();
+
+            writer.Close();
+            writer.Dispose();
+
             stream.Position = 0;
 
             return stream;
