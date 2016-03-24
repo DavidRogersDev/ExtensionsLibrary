@@ -415,5 +415,20 @@ namespace KesselRun.Extensions
 
             return source.Replace(" ", string.Empty);
         }
+
+        public static string[] Split(this string source, char delimiter, StringSplitOptions stringSplitOptions)
+        {
+            if (string.IsNullOrEmpty(source))
+            {
+                if(stringSplitOptions == StringSplitOptions.RemoveEmptyEntries)
+                {
+                    return Enumerable.Empty<string>().ToArray(); 
+                }
+
+                return new[] { source };
+            }
+
+            return source.Split(new[] { delimiter }, stringSplitOptions);
+        }
     }
 }
