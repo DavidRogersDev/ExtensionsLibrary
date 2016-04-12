@@ -1247,13 +1247,16 @@ namespace KesselRun.Extensions.Tests
         }
 
         [TestMethod]
-        public void SplitReturnsEmptyEnumerableWhenNullWithStringSplitOptionsRemoveEmptyEntries()
+        public void SplitThrowsArgumentNullExceptionForNullStringWithStringSplitOptionsRemoveEmptyEntries()
         {
             string nullString = null;
+            string[] items = null;
 
-            string[] items = nullString.Split(',', StringSplitOptions.RemoveEmptyEntries);
-
-            Assert.IsTrue(items.Length == 0);
+            ExceptionAssert.Throws<ArgumentNullException>(
+                () => items = nullString.Split(',', StringSplitOptions.RemoveEmptyEntries),
+                string.Format("Value cannot be null.{0}Parameter name: source", Environment.NewLine)
+                );
+            
         }
 
         [TestMethod]
@@ -1264,6 +1267,19 @@ namespace KesselRun.Extensions.Tests
             string[] items = spaceString.Split(',', StringSplitOptions.RemoveEmptyEntries);
 
             Assert.IsTrue(items.Length == 1);
+        }
+
+        [TestMethod]
+        public void SplitThrowsArgumentNullExceptionForNullStringWithStringSplitOptionsNone()
+        {
+            string nullString = null;
+            string[] items = null;
+
+            ExceptionAssert.Throws<ArgumentNullException>(
+                () => items = nullString.Split(',', StringSplitOptions.None),
+                string.Format("Value cannot be null.{0}Parameter name: source", Environment.NewLine)
+                );
+
         }
 
         [TestMethod]

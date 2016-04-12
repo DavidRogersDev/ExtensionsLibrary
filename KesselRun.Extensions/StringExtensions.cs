@@ -416,9 +416,11 @@ namespace KesselRun.Extensions
             return source.Replace(" ", string.Empty);
         }
 
-        public static string[] Split(this string source, char delimiter, StringSplitOptions stringSplitOptions)
+        public static string[] Split(this string source, char delimiter, StringSplitOptions stringSplitOptions = StringSplitOptions.RemoveEmptyEntries)
         {
-            if (string.IsNullOrEmpty(source))
+            if (source == null) throw new ArgumentNullException("source");
+
+            if (source.IsEmpty())
             {
                 if(stringSplitOptions == StringSplitOptions.RemoveEmptyEntries)
                 {
