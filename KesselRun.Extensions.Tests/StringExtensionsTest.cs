@@ -1236,6 +1236,70 @@ namespace KesselRun.Extensions.Tests
             Assert.AreEqual(targetString, originString);
         }
 
+        [TestMethod]
+        public void SplitReturnsEmptyEnumerableWhenEmptyWithStringSplitOptionsRemoveEmptyEntries()
+        {
+            string empty = string.Empty;
+
+            string[] items = empty.Split(',', StringSplitOptions.RemoveEmptyEntries);
+
+            Assert.IsTrue(items.Length == 0);
+        }
+
+        [TestMethod]
+        public void SplitReturnsEmptyEnumerableWhenNullWithStringSplitOptionsRemoveEmptyEntries()
+        {
+            string nullString = null;
+
+            string[] items = nullString.Split(',', StringSplitOptions.RemoveEmptyEntries);
+
+            Assert.IsTrue(items.Length == 0);
+        }
+
+        [TestMethod]
+        public void SplitReturnsSingleItemArrrayWhenASpaceWithStringSplitOptionsRemoveEmptyEntries()
+        {
+            string spaceString = " ";
+
+            string[] items = spaceString.Split(',', StringSplitOptions.RemoveEmptyEntries);
+
+            Assert.IsTrue(items.Length == 1);
+        }
+
+        [TestMethod]
+        public void SplitReturnsItemsWhenCommaDelimitedStringSplitOptionsRemoveEmptyEntries()
+        {
+            string spaceString = "hi,there";
+
+            string[] items = spaceString.Split(',', StringSplitOptions.RemoveEmptyEntries);
+
+            Assert.IsTrue(items[0].Equals("hi") && items[1].Equals("there"));
+        }
+
+        [TestMethod]
+        public void StringSplitOptionsRemoveEmptyEntriesWorks()
+        {
+            string spaceString = "hi,,there";
+
+            string[] items = spaceString.Split(',', StringSplitOptions.RemoveEmptyEntries);
+
+            Assert.IsTrue(items[0].Equals("hi") && items[1].Equals("there"));
+        }
+
+        [TestMethod]
+        public void StringSplitOptionsNoneWorks()
+        {
+            string spaceString = "hi,,there";
+
+            string[] items = spaceString.Split(',', StringSplitOptions.None);
+
+            Assert.IsTrue(items[0].Equals("hi") &&
+                items[1].Equals(string.Empty) &&
+                items[2].Equals("there"));
+        }
+
+
+
 		private static DateTime GetDate()
 		{
 			var dateTarget = new DateTime(2014, 11, 22);
