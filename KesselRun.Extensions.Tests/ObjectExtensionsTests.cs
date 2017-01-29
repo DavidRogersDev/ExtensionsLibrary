@@ -1,6 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Diagnostics;
 using KesselRun.Extensions.Tests.Infrastructure;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace KesselRun.Extensions.Tests
@@ -44,7 +46,7 @@ namespace KesselRun.Extensions.Tests
             var result = nowDescription.ToJsonString();
 
             //  Assert                        
-            Assert.IsTrue(true);
+            Assert.IsTrue(IsValidJson(result));
         }
 
         [TestMethod]
@@ -89,6 +91,33 @@ namespace KesselRun.Extensions.Tests
             //  Act
             //  Assert                        
             ExceptionAssert.Throws<ArgumentNullException>(() => stringArray.GetJsonTypeDescription());
+        }
+
+        private static bool IsValidJson(string strInput)
+        {
+            strInput = strInput.Trim();
+            if ((strInput.StartsWith("{") && strInput.EndsWith("}")) || //For object
+                (strInput.StartsWith("[") && strInput.EndsWith("]"))) //For array
+            {
+                try
+                {
+                    var obj = JToken.Parse(strInput);
+                    return true;
+                }
+                catch (JsonReaderException jex)
+                {
+                    //Exception in parsing json
+                    Debug.WriteLine(jex.Message);
+                    return false;
+                }
+                catch (Exception ex) //some other exception
+                {
+                    Debug.WriteLine(ex.ToString());
+                    return false;
+                }
+            }
+
+            return false;
         }
     }
 }
