@@ -17,9 +17,6 @@ namespace KesselRun.Extensions
         /// <returns>bool</returns>
         public static bool IsNull(this object source)
         {
-            if(source is ValueType)
-                throw new NotSupportedException("The object cannot be a value type.");
-
             return ReferenceEquals(null, source);
         }
 

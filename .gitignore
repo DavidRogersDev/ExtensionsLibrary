@@ -94,6 +94,7 @@ publish/
 packages/*
 !packages/repositories.config
 !NuGet.exe
+AssembliesAndNuget/*
 
 # Windows Azure Build Output
 csx

@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using KesselRun.Extensions.Tests.Infrastructure;
 using Newtonsoft.Json.Linq;
 
 namespace KesselRun.Extensions.Tests
@@ -32,47 +33,6 @@ namespace KesselRun.Extensions.Tests
             Assert.IsFalse(result);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof (NotSupportedException), "The object cannot be a value type.")]
-        public void VariableWhichIsValueTypeCallsIsNullThrowsException()
-        {
-            //  Arrange
-            var number = 5;
-
-            //  Act
-            var result = number.IsNull();
-
-            //  Assert                        
-            Assert.Fail();
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof (NotSupportedException), "The object cannot be a value type.")]
-        public void VariableWhichIsGuidCallsIsNullThrowsExceptiosn()
-        {
-            //  Arrange
-            var guid = Guid.NewGuid();
-
-            //  Act
-            var result = guid.IsNull();
-
-            //  Assert                        
-            Assert.Fail();
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof (NotSupportedException), "The object cannot be a value type.")]
-        public void VariableWhichIsNullableTypeCallsIsNullThrowsException()
-        {
-            //  Arrange
-            Nullable<int> number = 5;
-
-            //  Act
-            var result = number.IsNull();
-
-            //  Assert                        
-            Assert.Fail();
-        }
 
         [TestMethod]
         public void ToJsonStringSerializesObjectToJson()
@@ -121,18 +81,14 @@ namespace KesselRun.Extensions.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof (ArgumentNullException))]
         public void GetJsonTypeDescriptionThrowsExceptionWhereArgumentIsNull()
         {
             //  Arrange
             Array stringArray = null;
 
             //  Act
-            // ReSharper disable once ExpressionIsAlwaysNull
-            var jsonTypeDescription = stringArray.GetJsonTypeDescription();
-
             //  Assert                        
-            Assert.Fail();
+            ExceptionAssert.Throws<ArgumentNullException>(() => stringArray.GetJsonTypeDescription());
         }
     }
 }
