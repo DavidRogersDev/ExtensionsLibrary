@@ -29,11 +29,6 @@ namespace KesselRun.Extensions
             return false; // value-type
         }
 
-        public static bool ReferenceEqualsNull(this object source)
-        {
-            return ReferenceEquals(null, source);
-        }
-
         public static string ToJsonString(this object obj)
         {
             return JsonConvert.SerializeObject(obj);
