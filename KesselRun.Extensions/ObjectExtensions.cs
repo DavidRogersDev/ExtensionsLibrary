@@ -17,9 +17,23 @@ namespace KesselRun.Extensions
         /// <returns>bool</returns>
         public static bool IsNull(this object source)
         {
-            if(source is ValueType)
+            if (source is ValueType)
                 throw new NotSupportedException("The object cannot be a value type.");
 
+            return ReferenceEquals(null, source);
+        }
+
+        public static bool IsNullable<T>(this T obj)
+        {
+            if (obj == null) return true; // obvious
+            Type type = typeof(T);
+            if (!type.IsValueType) return true; // ref-type
+            if (Nullable.GetUnderlyingType(type) != null) return true; // Nullable<T>
+            return false; // value-type
+        }
+
+        public static bool ReferenceEqualsNull(this object source)
+        {
             return ReferenceEquals(null, source);
         }
 
