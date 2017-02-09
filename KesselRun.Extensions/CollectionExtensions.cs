@@ -45,6 +45,22 @@ namespace KesselRun.Extensions
 
             return dictionary[key];
         }
+        
+
+        public static void AddOrUpdate<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue value)
+        {
+            if (dictionary == null)
+                throw new ArgumentNullException("dictionary");
+
+            if (dictionary.ContainsKey(key))
+            {
+                dictionary[key] = value;
+            }
+            else
+            {
+                dictionary.Add(key, value);
+            }
+        }
 
         /// <summary>
         /// Taken from the WebformsMVP project - http://webformsmvp.com/

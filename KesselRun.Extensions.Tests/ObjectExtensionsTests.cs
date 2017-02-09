@@ -1,5 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Diagnostics;
+using KesselRun.Extensions.Tests.Infrastructure;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace KesselRun.Extensions.Tests
@@ -32,47 +35,6 @@ namespace KesselRun.Extensions.Tests
             Assert.IsFalse(result);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof (NotSupportedException), "The object cannot be a value type.")]
-        public void VariableWhichIsValueTypeCallsIsNullThrowsException()
-        {
-            //  Arrange
-            var number = 5;
-
-            //  Act
-            var result = number.IsNull();
-
-            //  Assert                        
-            Assert.Fail();
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof (NotSupportedException), "The object cannot be a value type.")]
-        public void VariableWhichIsGuidCallsIsNullThrowsExceptiosn()
-        {
-            //  Arrange
-            var guid = Guid.NewGuid();
-
-            //  Act
-            var result = guid.IsNull();
-
-            //  Assert                        
-            Assert.Fail();
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof (NotSupportedException), "The object cannot be a value type.")]
-        public void VariableWhichIsNullableTypeCallsIsNullThrowsException()
-        {
-            //  Arrange
-            Nullable<int> number = 5;
-
-            //  Act
-            var result = number.IsNull();
-
-            //  Assert                        
-            Assert.Fail();
-        }
 
         [TestMethod]
         public void ToJsonStringSerializesObjectToJson()
@@ -84,7 +46,7 @@ namespace KesselRun.Extensions.Tests
             var result = nowDescription.ToJsonString();
 
             //  Assert                        
-            Assert.IsTrue(true);
+            Assert.IsTrue(IsValidJson(result));
         }
 
         [TestMethod]
@@ -121,18 +83,41 @@ namespace KesselRun.Extensions.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof (ArgumentNullException))]
         public void GetJsonTypeDescriptionThrowsExceptionWhereArgumentIsNull()
         {
             //  Arrange
             Array stringArray = null;
 
             //  Act
-            // ReSharper disable once ExpressionIsAlwaysNull
-            var jsonTypeDescription = stringArray.GetJsonTypeDescription();
-
             //  Assert                        
-            Assert.Fail();
+            ExceptionAssert.Throws<ArgumentNullException>(() => stringArray.GetJsonTypeDescription());
+        }
+
+        private static bool IsValidJson(string strInput)
+        {
+            strInput = strInput.Trim();
+            if ((strInput.StartsWith("{") && strInput.EndsWith("}")) || //For object
+                (strInput.StartsWith("[") && strInput.EndsWith("]"))) //For array
+            {
+                try
+                {
+                    var obj = JToken.Parse(strInput);
+                    return true;
+                }
+                catch (JsonReaderException jex)
+                {
+                    //Exception in parsing json
+                    Debug.WriteLine(jex.Message);
+                    return false;
+                }
+                catch (Exception ex) //some other exception
+                {
+                    Debug.WriteLine(ex.ToString());
+                    return false;
+                }
+            }
+
+            return false;
         }
     }
 }
